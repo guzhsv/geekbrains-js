@@ -1,0 +1,23 @@
+.goods-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.center {
+    padding-left: calc(50% - 570px);
+    padding-right: calc(50% - 570px);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header {
+    background-color: black;
+}
+
+.header__text {
+    color: white;
+}
