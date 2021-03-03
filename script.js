@@ -19,22 +19,52 @@ class GoodsItem {
   }
 }
 
-class GoodsList {
-  #goods;
-  
-  constructor() {
-    this.#goods = [];
+
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
+let makeGETRequest = (url, callback) => {
+  let xhr = new XMLHttpRequest();
+
+  if (window.XMLHttpRequest) {
+    xhr = new XMLHttpRequest();
+  } else if (window.ActiveXObject) { 
+    xhr = new ActiveXObject("Microsoft.XMLHTTP");
   }
 
-  //Для получения данных с сервера
-  fetchGoods() { 
-    this.#goods = [
-      { title: 'Shirt', price: 150 },
-      { title: 'Socks', price: 50 },
-      { title: 'Jacket', price: 350 },
-      { title: 'Shoes', price: 250 },
-    ];
+  xhr.open('GET', url, true);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if(xhr.status !== 200) {
+        console.log('Error');
+      } else {
+        callback(xhr.responseText);
+      }
+    }
   }
+
+  xhr.send();
+}
+
+
+class GoodsList {
+  #goods;
+  #allProducts;
+
+  constructor(container) {
+    console.log('constructor');
+    this.container = container;
+    this.#goods = [];
+    this.#allProducts = [];
+  }
+
+  getProducts(){
+    return fetch(`${API_URL}/catalogData.json`)
+    .then((response) => response.json())
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+
   render() {
     let listHtml = '';
     this.#goods.forEach(good => {
@@ -53,14 +83,10 @@ class GoodsList {
 }
 
 const list = new GoodsList();
-list.fetchGoods();
-list.render();
 
-/* 
-1. Добавьте пустые классы для Корзины товаров и Элемента корзины товаров. 
-2. Продумайте, какие методы понадобятся для работы с этими сущностями.
-Добавьте для GoodsList метод, определяющий суммарную стоимость всех товаров.
-*/
+list.getProducts()
+  .then(list.render);
+
 
 //Создадим класс для корзины товаров
 class Cart{
